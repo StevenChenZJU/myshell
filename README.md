@@ -1,8 +1,3 @@
----
-typora-copy-images-to: img
----
-
-
 
 # Myshell用户手册
 
