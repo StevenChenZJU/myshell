@@ -364,7 +364,7 @@ RTCODE command_bg(vector<string> args){
             setenv("PARENT", getenv("SHELL"), 1); // 设置环境变量
             SigDefault();
             // 后台运行
-            killpg(pid, SIGTSTP);   
+            // killpg(pid, SIGTSTP);   
 
             Execute(args);
             exit(0);
@@ -392,7 +392,7 @@ RTCODE command_bg(vector<string> args){
         }
     }
     else{
-        killpg(0, SIGTSTP);
+        // killpg(0, SIGTSTP);
         Execute(args);
         return EXIT_SUCCESS;
     }

@@ -220,7 +220,7 @@ void ForkExec(string input){
         // 如果是内部指令,此时很可能已经结束了进程
         if(!input.empty() && *input.rbegin() == '&'){
             cout<<"Run in background: "<<input<<endl;
-            killpg(pid, SIGTSTP);   
+            // killpg(pid, SIGTSTP);   
         }
         else{
             // 设置为前台运行
