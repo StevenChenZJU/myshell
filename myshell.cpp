@@ -107,20 +107,20 @@ void ExecPipe(vector<string>& procs){
                     if(i == 0){
                         close(pipes[i].first); // 要提前关闭管道另一端
                         dup2(pipes[i].second, STDOUT_FILENO);
-                        close(pipes[i].second); // 必须要关闭
+                        // close(pipes[i].second); // 必须要关闭
                     }
                     else if(i == procs.size()-1){
                         close(pipes[i-1].second);
                         dup2(pipes[i-1].first, STDIN_FILENO);
-                        close(pipes[i-1].first); // 必须要关闭
+                        // close(pipes[i-1].first); // 必须要关闭
                     }
                     else{
                         close(pipes[i-1].second);
                         close(pipes[i].first);
                         dup2(pipes[i-1].first, STDIN_FILENO);
                         dup2(pipes[i].second, STDOUT_FILENO);
-                        close(pipes[i].second); // 必须要关闭
-                        close(pipes[i-1].first); // 必须要关闭
+                        // close(pipes[i].second); // 必须要关闭
+                        // close(pipes[i-1].first); // 必须要关闭
                     }
                 }
                 FILE* fd_to_close = NULL;
@@ -129,20 +129,30 @@ void ExecPipe(vector<string>& procs){
                 int rtcode = Execute(processed);
                 LAST_RETURN = rtcode;
 
+                //TODO: Bug here -- may not return here
                 if(fd_to_close != NULL){
                     // 恢复重定向
                     fflush(fd_to_close);
                     fclose(fd_to_close);
                     freopen("/dev/tty", "w", stdout);
                 }
-                    
                 exit(rtcode);
             }
             else{
                 // 父进程
                 setpgid(pid, pgid);
                 waitpid(pid, NULL, 0);
-
+                cout<<"exit pid:"<<pid<<endl;
+                if(i == 0){
+                    close(pipes[i].second); // 必须要关闭
+                }
+                else if(i == procs.size()-1){
+                    close(pipes[i-1].first); // 必须要关闭
+                }
+                else{
+                    close(pipes[i].second); // 必须要关闭
+                    close(pipes[i-1].first); // 必须要关闭
+                }
             }
                 
         }
@@ -152,10 +162,13 @@ void ExecPipe(vector<string>& procs){
         }
     }
     // 关闭所有管道
+    
     for(int i = 0; i < proc_count-1; i++){
+        
         close(pipes[i].first);
         close(pipes[i].second);
     }
+    // exit(0);
 }
 void ExecString(string input){
     vector<string> procs; 

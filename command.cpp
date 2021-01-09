@@ -380,8 +380,10 @@ RTCODE command_bg(vector<string> args){
             // 查看返回结果
             if (WIFEXITED(status)) {
                 printf("exited, status=%d\n", WEXITSTATUS(status));
+                exit(0);
             } else if (WIFSIGNALED(status)) {
                 printf("killed by signal %d\n", WTERMSIG(status));
+                exit(0);
             } else if (WIFSTOPPED(status)) {
                 printf("stopped by signal %d\n", WSTOPSIG(status));
                 // 放在后台进程中
